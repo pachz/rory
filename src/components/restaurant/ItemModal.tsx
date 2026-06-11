@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { MenuItem, ProductOption } from "@/lib/graphql/types";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import { useCart, type SelectedOption } from "@/context/cart-context";
 import {
   formatPrice,
@@ -55,7 +55,7 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
   const basePrice = item.shopItem?.shopItemPrice?.price ?? 0;
   const originalPrice = item.shopItem?.shopItemPrice?.originalPrice;
   const description = stripHtml(item.description);
-  const image = item.thumbnail ?? item.itemMedias[0]?.url;
+  const image = item.thumbnail ?? item.itemMedias[0]?.url ?? null;
   const isValid = validateOptions(activeOptions, selected);
 
   const selectedOptions: SelectedOption[] = activeOptions.flatMap((option) => {
@@ -126,36 +126,25 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
       />
 
       <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-[var(--surface)] shadow-2xl sm:rounded-3xl">
-        {image && (
-          <div className="relative h-52 w-full shrink-0 bg-[var(--elevated)]">
-            <Image
-              src={image}
-              alt={item.name}
-              fill
-              className="object-cover"
-              sizes="512px"
-            />
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute start-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
-            >
-              ✕
-            </button>
-          </div>
-        )}
+        <div className="relative h-52 w-full shrink-0">
+          <RemoteImage
+            src={image}
+            alt={item.name}
+            fill
+            variant="item"
+            sizes="512px"
+            containerClassName="h-full w-full"
+          />
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute start-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm"
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-5">
-          {!image && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="mb-3 text-sm text-[var(--muted)]"
-            >
-              ✕ بستن
-            </button>
-          )}
-
           <h2 className="text-xl font-bold">{item.name}</h2>
 
           {description && (

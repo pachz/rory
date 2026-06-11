@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import { useCart, lineTotal } from "@/context/cart-context";
 import { formatPrice } from "@/lib/format";
 
@@ -56,17 +56,14 @@ export function CartDrawer({ currency }: CartDrawerProps) {
                   key={line.cartId}
                   className="flex gap-3 rounded-2xl border border-[var(--border)] p-3"
                 >
-                  {line.thumbnail && (
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl">
-                      <Image
-                        src={line.thumbnail}
-                        alt={line.name}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    </div>
-                  )}
+                  <RemoteImage
+                    src={line.thumbnail}
+                    alt={line.name}
+                    fill
+                    variant="item"
+                    sizes="64px"
+                    containerClassName="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl"
+                  />
                   <div className="flex min-w-0 flex-1 flex-col">
                     <p className="font-semibold leading-snug">{line.name}</p>
                     {line.selectedOptions.length > 0 && (

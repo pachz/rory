@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import type { MenuCategory, MenuItem } from "@/lib/graphql/types";
 import { CATEGORY_COMPACT_THRESHOLD } from "@/lib/menu-config";
 import { MenuItemCard } from "./MenuItemCard";
@@ -33,14 +34,16 @@ function CategoryHeader({
   if (!compact) {
     return (
       <div className="mb-4 flex items-center gap-3">
-        {category.thumbnail && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={category.thumbnail}
-            alt=""
-            className="h-6 w-6 opacity-70"
-          />
-        )}
+        <RemoteImage
+          src={category.thumbnail}
+          alt={category.label}
+          width={24}
+          height={24}
+          variant="category"
+          objectFit="contain"
+          containerClassName="h-6 w-6 shrink-0"
+          className="opacity-70"
+        />
         <h2 className="text-lg font-bold text-[var(--foreground)]">
           {category.label}
         </h2>
@@ -54,14 +57,16 @@ function CategoryHeader({
       onClick={onToggle}
       className="mb-3 flex w-full items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3.5 text-start transition hover:border-[var(--brand-secondary)]/30"
     >
-      {category.thumbnail && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={category.thumbnail}
-          alt=""
-          className="h-8 w-8 shrink-0 object-contain opacity-80"
-        />
-      )}
+      <RemoteImage
+        src={category.thumbnail}
+        alt={category.label}
+        width={32}
+        height={32}
+        variant="category"
+        objectFit="contain"
+        containerClassName="h-8 w-8 shrink-0"
+        className="opacity-80"
+      />
       <div className="min-w-0 flex-1">
         <h2 className="font-bold text-[var(--foreground)]">{category.label}</h2>
         <p className="text-xs text-[var(--muted-light)]">{itemCount} مورد</p>

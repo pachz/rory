@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import type { MenuItem } from "@/lib/graphql/types";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import {
   formatPrice,
   hasDiscount,
@@ -34,22 +34,22 @@ export function MenuItemCard({ item, currency, onSelect }: MenuItemCardProps) {
         isSoldOut ? "cursor-not-allowed opacity-60" : "cursor-pointer"
       }`}
     >
-      {item.thumbnail && (
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-[var(--elevated)]">
-          <Image
-            src={item.thumbnail}
-            alt={item.name}
-            fill
-            className="object-cover transition group-hover:scale-105"
-            sizes="96px"
-          />
-          {isSoldOut && (
+      <RemoteImage
+        src={item.thumbnail}
+        alt={item.name}
+        fill
+        variant="item"
+        sizes="96px"
+        containerClassName="h-24 w-24 shrink-0 overflow-hidden rounded-xl"
+        className="transition group-hover:scale-105"
+        overlay={
+          isSoldOut ? (
             <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-xs font-bold text-white">
               تمام شد
             </span>
-          )}
-        </div>
-      )}
+          ) : undefined
+        }
+      />
 
       <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
         <div>

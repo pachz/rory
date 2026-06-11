@@ -1,5 +1,6 @@
 "use client";
 
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import type { MenuCategory } from "@/lib/graphql/types";
 
 interface CategoryGridSheetProps {
@@ -64,20 +65,16 @@ export function CategoryGridSheet({
                       : "border-[var(--border)] hover:border-[var(--brand-secondary)]/40 hover:bg-[var(--elevated)]"
                   }`}
                 >
-                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-[var(--elevated)]">
-                    {category.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={category.thumbnail}
-                        alt=""
-                        className="h-8 w-8 object-contain opacity-80"
-                      />
-                    ) : (
-                      <span className="text-lg font-bold text-[var(--muted-light)]">
-                        {category.label.charAt(0)}
-                      </span>
-                    )}
-                  </div>
+                  <RemoteImage
+                    src={category.thumbnail}
+                    alt={category.label}
+                    fill
+                    variant="category"
+                    objectFit="contain"
+                    sizes="48px"
+                    containerClassName="h-12 w-12 overflow-hidden rounded-xl"
+                    className="p-1.5 opacity-80"
+                  />
                   <span className="line-clamp-2 text-xs font-medium leading-tight">
                     {category.label}
                   </span>
