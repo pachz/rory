@@ -1,11 +1,28 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light dark;
   --background: #faf8f5;
   --foreground: #1a1008;
+  --surface: #ffffff;
+  --muted: color-mix(in srgb, var(--foreground) 55%, transparent);
+  --muted-light: color-mix(in srgb, var(--foreground) 40%, transparent);
+  --border: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --elevated: color-mix(in srgb, var(--foreground) 5%, transparent);
   --brand-primary: #f5f0e8;
   --brand-secondary: #2c1810;
-  --surface: #ffffff;
+  --brand-accent: var(--brand-secondary);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f0d0b;
+    --foreground: #f5f0ea;
+    --surface: #1a1714;
+    --border: color-mix(in srgb, var(--foreground) 12%, transparent);
+    --elevated: color-mix(in srgb, var(--foreground) 8%, transparent);
+    --brand-accent: color-mix(in srgb, var(--brand-secondary) 55%, white);
+  }
 }
 
 @theme inline {

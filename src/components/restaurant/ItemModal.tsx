@@ -127,7 +127,7 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
 
       <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-[var(--surface)] shadow-2xl sm:rounded-3xl">
         {image && (
-          <div className="relative h-52 w-full shrink-0 bg-black/5">
+          <div className="relative h-52 w-full shrink-0 bg-[var(--elevated)]">
             <Image
               src={image}
               alt={item.name}
@@ -150,7 +150,7 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="mb-3 text-sm text-black/50"
+              className="mb-3 text-sm text-[var(--muted)]"
             >
               ✕ بستن
             </button>
@@ -159,17 +159,17 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
           <h2 className="text-xl font-bold">{item.name}</h2>
 
           {description && (
-            <p className="mt-2 text-sm leading-relaxed text-black/60">
+            <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
               {description}
             </p>
           )}
 
           <div className="mt-3 flex items-center gap-2">
-            <span className="text-lg font-bold text-[var(--brand-secondary)]">
+            <span className="text-lg font-bold text-[var(--brand-accent)]">
               {formatPrice(displayTotal, currency)}
             </span>
             {originalPrice != null && hasDiscount(originalPrice, basePrice) && (
-              <span className="text-sm text-black/40 line-through">
+              <span className="text-sm text-[var(--muted-light)] line-through">
                 {formatPrice(originalPrice, currency)}
               </span>
             )}
@@ -179,7 +179,7 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
             <div key={option.id} className="mt-6">
               <div className="mb-2 flex items-baseline justify-between">
                 <h3 className="font-semibold">{option.label}</h3>
-                <span className="text-xs text-black/45">
+                <span className="text-xs text-[var(--muted-light)]">
                   {option.minimumSelectableChoices > 0
                     ? `حداقل ${option.minimumSelectableChoices}`
                     : "اختیاری"}
@@ -203,11 +203,11 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
                       className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition ${
                         isSelected
                           ? "border-[var(--brand-secondary)] bg-[var(--brand-primary)]/30"
-                          : "border-black/8 hover:border-black/15"
+                          : "border-[var(--border)] hover:border-[var(--brand-secondary)]/40"
                       } ${choice.isSoldOut ? "cursor-not-allowed opacity-50" : ""}`}
                     >
                       <span>{choice.item.name}</span>
-                      <span className="text-black/55">
+                      <span className="text-[var(--muted)]">
                         {choicePrice > 0
                           ? `+${formatPrice(choicePrice, currency)}`
                           : choice.isSoldOut
@@ -222,7 +222,7 @@ export function ItemModal({ item, currency, onClose }: ItemModalProps) {
           ))}
         </div>
 
-        <div className="border-t border-black/5 p-4">
+        <div className="border-t border-[var(--border)] p-4">
           <button
             type="button"
             onClick={handleAdd}

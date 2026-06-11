@@ -62,7 +62,6 @@ export function RestaurantPage({ data }: RestaurantPageProps) {
           {
             "--brand-primary": primary,
             "--brand-secondary": secondary,
-            "--surface": "#ffffff",
           } as React.CSSProperties
         }
       >

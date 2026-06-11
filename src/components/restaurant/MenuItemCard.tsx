@@ -30,12 +30,12 @@ export function MenuItemCard({ item, currency, onSelect }: MenuItemCardProps) {
       type="button"
       onClick={() => !isSoldOut && onSelect(item)}
       disabled={isSoldOut}
-      className={`group flex w-full gap-3 rounded-2xl border border-black/5 bg-[var(--surface)] p-3 text-start shadow-sm transition hover:shadow-md ${
+      className={`group flex w-full gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 text-start shadow-sm transition hover:shadow-md ${
         isSoldOut ? "cursor-not-allowed opacity-60" : "cursor-pointer"
       }`}
     >
       {item.thumbnail && (
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-black/5">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-[var(--elevated)]">
           <Image
             src={item.thumbnail}
             alt={item.name}
@@ -62,13 +62,13 @@ export function MenuItemCard({ item, currency, onSelect }: MenuItemCardProps) {
               {item.name}
             </h3>
             {hasOptions && !isSoldOut && (
-              <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 text-[10px] text-black/50">
+              <span className="shrink-0 rounded-md bg-[var(--elevated)] px-1.5 py-0.5 text-[10px] text-[var(--muted-light)]">
                 سفارشی
               </span>
             )}
           </div>
           {description && (
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-black/55">
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[var(--muted)]">
               {description}
             </p>
           )}
@@ -76,11 +76,11 @@ export function MenuItemCard({ item, currency, onSelect }: MenuItemCardProps) {
 
         {price != null && (
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-sm font-bold text-[var(--brand-secondary)]">
+            <span className="text-sm font-bold text-[var(--brand-accent)]">
               {formatPrice(price, currency)}
             </span>
             {originalPrice != null && hasDiscount(originalPrice, price) && (
-              <span className="text-xs text-black/40 line-through">
+              <span className="text-xs text-[var(--muted-light)] line-through">
                 {formatPrice(originalPrice, currency)}
               </span>
             )}
