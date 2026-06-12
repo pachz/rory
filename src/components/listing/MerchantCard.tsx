@@ -33,22 +33,22 @@ export function MerchantCard({ merchant, priority = false }: MerchantCardProps) 
       className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg"
       style={{ "--merchant-accent": accent } as CSSProperties}
     >
-      {/* Cover */}
-      <div className="relative h-[7.5rem] shrink-0 overflow-hidden">
+      {/* Cover — z-0 so overlapping logo in body paints above */}
+      <div className="relative z-0 h-[7.5rem] shrink-0 overflow-hidden">
         <div className="absolute inset-0">
           <MerchantCover merchant={merchant} priority={priority} />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[var(--surface)] via-transparent to-black/10" />
 
         {merchant.isActive && (
-          <span className="absolute start-3 top-3 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
+          <span className="absolute start-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
             فعال
           </span>
         )}
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
+      <div className="relative z-10 flex flex-1 flex-col px-4 pb-4 pt-3">
         {/* Logo + title row — logo on the right (start in RTL) */}
         <div className="mb-3 flex items-start gap-3">
           <RemoteImage
@@ -59,7 +59,7 @@ export function MerchantCard({ merchant, priority = false }: MerchantCardProps) 
             priority={priority}
             sizes="56px"
             variant="logo"
-            containerClassName="-mt-9 h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md"
+            containerClassName="relative z-10 -mt-9 h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md"
             className="object-cover"
           />
           <div className="min-w-0 flex-1 pt-0.5">
