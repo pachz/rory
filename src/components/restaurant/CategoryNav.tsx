@@ -16,6 +16,14 @@ export function CategoryNav({
 }: CategoryNavProps) {
   const [activeId, setActiveId] = useState(categories[0]?.id ?? "");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 320);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,6 +51,33 @@ export function CategoryNav({
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
     setActiveId(id);
   };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollTopButton = showScrollTop ? (
+    <button
+      type="button"
+      onClick={scrollToTop}
+      aria-label="بازگشت به بالا"
+      className="fixed bottom-6 end-5 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/95 text-[var(--foreground)] shadow-lg backdrop-blur-md transition hover:scale-[1.05] active:scale-[0.95]"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        className="h-5 w-5"
+        aria-hidden
+      >
+        <path
+          fillRule="evenodd"
+          d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </button>
+  ) : null;
 
   if (categories.length === 0) return null;
 
@@ -114,31 +149,35 @@ export function CategoryNav({
           onClose={() => setSheetOpen(false)}
           onSelect={scrollToCategory}
         />
+        {scrollTopButton}
       </>
     );
   }
 
   return (
-    <nav className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-3xl gap-2 overflow-x-auto px-4 py-3 scrollbar-none">
-        {categories.map((category) => {
-          const isActive = activeId === category.id;
-          return (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => scrollToCategory(category.id)}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-[var(--brand-secondary)] text-white shadow-md"
-                  : "bg-[var(--elevated)] text-[var(--foreground)] hover:bg-[var(--border)]"
-              }`}
-            >
-              {category.label}
-            </button>
-          );
-        })}
-      </div>
-    </nav>
+    <>
+      <nav className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-3xl gap-2 overflow-x-auto px-4 py-3 scrollbar-none">
+          {categories.map((category) => {
+            const isActive = activeId === category.id;
+            return (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => scrollToCategory(category.id)}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-[var(--brand-secondary)] text-white shadow-md"
+                    : "bg-[var(--elevated)] text-[var(--foreground)] hover:bg-[var(--border)]"
+                }`}
+              >
+                {category.label}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+      {scrollTopButton}
+    </>
   );
 }
