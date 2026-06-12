@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMainDomain } from "@/lib/subdomain";
+import { getMainDomain, listingSiteUrl } from "@/lib/subdomain";
 
 export default function HomePage() {
   const domain = getMainDomain();
@@ -20,14 +20,23 @@ export default function HomePage() {
           </code>
         </p>
 
-        {process.env.NODE_ENV === "development" && (
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
-            href="/?subdomain=kaban"
-            className="mt-8 inline-block rounded-full bg-[var(--brand-secondary)] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+            href={listingSiteUrl()}
+            className="inline-block rounded-full bg-[var(--brand-secondary)] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
           >
-            Try kaban (dev)
+            Browse all restaurants
           </Link>
-        )}
+
+          {process.env.NODE_ENV === "development" && (
+            <Link
+              href="/?subdomain=kaban"
+              className="inline-block rounded-full border border-[var(--border)] bg-[var(--surface)] px-6 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:opacity-90"
+            >
+              Try kaban (dev)
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

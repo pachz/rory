@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { extractSubdomain } from "@/lib/subdomain";
+import {
+  extractSubdomain,
+  isListingSubdomain,
+} from "@/lib/subdomain";
 
 export function middleware(request: NextRequest) {
   const hostname = request.headers.get("host") ?? "";
@@ -16,7 +19,9 @@ export function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   const pathSuffix = url.pathname === "/" ? "" : url.pathname;
-  url.pathname = `/sites/${subdomain}${pathSuffix}`;
+  url.pathname = isListingSubdomain(subdomain)
+    ? `/listing${pathSuffix}`
+    : `/sites/${subdomain}${pathSuffix}`;
   url.searchParams.delete("subdomain");
 
   return NextResponse.rewrite(url);
