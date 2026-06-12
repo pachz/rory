@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
         hostname: "public-cdn.menew.ir",
       },
     ],
+    // Cache optimized logos/covers on Vercel's CDN (default is 4h).
+    minimumCacheTTL: 86_400,
   },
 };
 

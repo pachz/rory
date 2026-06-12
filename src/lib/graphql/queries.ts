@@ -111,6 +111,31 @@ export const GET_ENTITY_ITEMS = `
   }
 `;
 
+export const GET_MERCHANT_CATALOG = `
+  query getMerchantCatalog {
+    plans {
+      label
+      entities {
+        id
+        username
+        name
+        logo
+        coverPhoto
+        primaryColor
+        secondaryColor
+        isActive
+        isMapActive
+        type {
+          label
+        }
+        activePlan {
+          label
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ENTITY_AMENITIES = `
   query GetEntityAmenities($username: String!) {
     entity(username: $username) {

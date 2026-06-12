@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { getMerchantCatalog } from "@/lib/api/listing";
 import { ListingDirectory } from "@/components/listing/ListingDirectory";
-import {
-  getMerchantCatalog,
-  getMerchantPlans,
-  getMerchants,
-  getMerchantTypes,
-} from "@/lib/merchants";
+import { getMerchantPlans, getMerchantTypes } from "@/lib/merchants";
+
+/** ISR — matches CACHE_REVALIDATE_SECONDS default (300s). */
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Restaurant Directory | Rory",
@@ -18,22 +17,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ListingPage() {
-  const catalog = getMerchantCatalog();
-  const merchants = getMerchants();
-  const types = getMerchantTypes();
-  const plans = getMerchantPlans();
+export default async function ListingPage() {
+  const catalog = await getMerchantCatalog();
+  const types = getMerchantTypes(catalog.merchants);
+  const plans = getMerchantPlans(catalog.merchants);
 
   return (
     <div dir="rtl" lang="fa">
       <ListingDirectory
-        merchants={merchants}
+        merchants={catalog.merchants}
         types={types}
         plans={plans}
         stats={{
           total: catalog.count,
           active: catalog.activeCount,
-          generatedAt: catalog.generatedAt,
+          fetchedAt: catalog.fetchedAt,
         }}
       />
     </div>

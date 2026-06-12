@@ -4,7 +4,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { MerchantCard } from "@/components/listing/MerchantCard";
 import type { Merchant } from "@/lib/merchants";
 
-const PAGE_SIZE = 60;
+const PAGE_SIZE = 48;
 
 type SortKey = "name" | "active" | "type";
 
@@ -15,12 +15,23 @@ interface ListingDirectoryProps {
   stats: {
     total: number;
     active: number;
-    generatedAt: string;
+    fetchedAt: string;
   };
 }
 
 function normalize(text: string): string {
   return text.trim().toLowerCase();
+}
+
+function formatFetchedAt(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat("fa-IR", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
 }
 
 export function ListingDirectory({
@@ -79,52 +90,51 @@ export function ListingDirectory({
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* Hero */}
-      <header className="relative overflow-hidden border-b border-[var(--border)]">
-        <div
-          className="absolute inset-0 opacity-[0.35]"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--brand-secondary) 18%, transparent), transparent 45%),
-              radial-gradient(circle at 80% 0%, color-mix(in srgb, #c4a574 22%, transparent), transparent 40%),
-              radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--brand-secondary) 12%, transparent), transparent 50%)
-            `,
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-          }}
-        />
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,color-mix(in_srgb,var(--brand-secondary)_22%,transparent),transparent)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,var(--background)_100%)]" />
 
-        <div className="relative mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-light)]">
-            Rory Directory
-          </p>
-          <h1 className="max-w-2xl text-4xl font-bold leading-tight text-[var(--foreground)] sm:text-5xl">
-            Every menu, one place
-          </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-            Browse {stats.total.toLocaleString("fa-IR")} restaurants, cafés, and
-            lounges on Rory — pick a spot and explore their digital menu.
-          </p>
+        <div className="relative mx-auto max-w-7xl px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-light)] backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Rory Directory
+              </p>
+              <h1 className="text-4xl font-bold leading-[1.15] text-[var(--foreground)] sm:text-5xl lg:text-6xl">
+                کشف بهترین
+                <span className="block text-[color-mix(in_srgb,var(--brand-secondary)_88%,#c4a574)]">
+                  کافه‌ها و رستوران‌ها
+                </span>
+              </h1>
+              <p className="mt-5 max-w-xl text-base leading-8 text-[var(--muted)] sm:text-lg">
+                {stats.total.toLocaleString("fa-IR")} مجموعه غذایی با منوی
+                دیجیتال — جستجو کنید، فیلتر بزنید و مستقیم وارد منو شوید.
+              </p>
+            </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <StatPill label="Total" value={stats.total} />
-            <StatPill label="Active" value={stats.active} accent />
-            <StatPill label="Categories" value={types.length} />
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:min-w-[320px]">
+              <StatPill label="کل مجموعه‌ها" value={stats.total} />
+              <StatPill label="فعال" value={stats.active} accent />
+              <StatPill label="دسته‌بندی" value={types.length} />
+            </div>
           </div>
         </div>
       </header>
 
       {/* Filters */}
-      <div className="sticky top-0 z-20 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--background)_88%,transparent)] backdrop-blur-xl">
-        <div className="mx-auto max-w-6xl space-y-4 px-5 py-4 sm:px-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="sticky top-0 z-20 border-y border-[var(--border)] bg-[color-mix(in_srgb,var(--background)_90%,transparent)] shadow-sm backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl space-y-3 px-5 py-4 sm:px-8">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
             <div className="relative min-w-0 flex-1">
               <span className="pointer-events-none absolute inset-y-0 start-4 flex items-center text-[var(--muted-light)]">
-                ⌕
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </span>
               <input
                 type="search"
@@ -133,19 +143,19 @@ export function ListingDirectory({
                   setQuery(e.target.value);
                   resetPagination();
                 }}
-                placeholder="Search name, username, or type…"
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] py-3 ps-10 pe-4 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-light)] focus:border-[color-mix(in_srgb,var(--brand-secondary)_40%,transparent)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--brand-secondary)_12%,transparent)]"
+                placeholder="جستجو در نام، نام کاربری یا دسته…"
+                className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] py-3.5 ps-11 pe-4 text-sm text-[var(--foreground)] shadow-sm outline-none transition placeholder:text-[var(--muted-light)] focus:border-[color-mix(in_srgb,var(--brand-secondary)_35%,transparent)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--brand-secondary)_8%,transparent)]"
               />
             </div>
 
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <FilterToggle
                 active={activeOnly}
                 onClick={() => {
                   setActiveOnly((v) => !v);
                   resetPagination();
                 }}
-                label="Active only"
+                label="فقط فعال"
               />
               <select
                 value={sort}
@@ -153,23 +163,23 @@ export function ListingDirectory({
                   setSort(e.target.value as SortKey);
                   resetPagination();
                 }}
-                className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-sm text-[var(--foreground)] outline-none"
+                className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--foreground)] shadow-sm outline-none"
               >
-                <option value="active">Sort: active first</option>
-                <option value="name">Sort: name</option>
-                <option value="type">Sort: category</option>
+                <option value="active">مرتب‌سازی: فعال‌ها اول</option>
+                <option value="name">مرتب‌سازی: نام</option>
+                <option value="type">مرتب‌سازی: دسته</option>
               </select>
             </div>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
             <Chip
               active={typeFilter === "all"}
               onClick={() => {
                 setTypeFilter("all");
                 resetPagination();
               }}
-              label="All types"
+              label="همه دسته‌ها"
             />
             {types.map((type) => (
               <Chip
@@ -184,14 +194,14 @@ export function ListingDirectory({
             ))}
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
             <Chip
               active={planFilter === "all"}
               onClick={() => {
                 setPlanFilter("all");
                 resetPagination();
               }}
-              label="All plans"
+              label="همه پلن‌ها"
             />
             {plans.map((plan) => (
               <Chip
@@ -209,50 +219,58 @@ export function ListingDirectory({
       </div>
 
       {/* Results */}
-      <main className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-10">
-        <p className="mb-6 text-sm text-[var(--muted)]">
-          Showing{" "}
-          <span className="font-semibold text-[var(--foreground)]">
-            {visible.length.toLocaleString("fa-IR")}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-[var(--foreground)]">
-            {filtered.length.toLocaleString("fa-IR")}
-          </span>{" "}
-          venues
-          {deferredQuery !== query && (
-            <span className="ms-2 text-[var(--muted-light)]">Searching…</span>
-          )}
-        </p>
+      <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-[var(--muted)]">
+            نمایش{" "}
+            <span className="font-bold text-[var(--foreground)]">
+              {visible.length.toLocaleString("fa-IR")}
+            </span>{" "}
+            از{" "}
+            <span className="font-bold text-[var(--foreground)]">
+              {filtered.length.toLocaleString("fa-IR")}
+            </span>{" "}
+            مجموعه
+            {deferredQuery !== query && (
+              <span className="ms-2 text-[var(--muted-light)]">در حال جستجو…</span>
+            )}
+          </p>
+          <p className="text-[11px] text-[var(--muted-light)]">
+            بروزرسانی: {formatFetchedAt(stats.fetchedAt)}
+          </p>
+        </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-16 text-center">
-            <p className="text-lg font-semibold text-[var(--foreground)]">
-              No venues match your filters
+          <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-20 text-center">
+            <p className="text-xl font-bold text-[var(--foreground)]">
+              نتیجه‌ای پیدا نشد
             </p>
             <p className="mt-2 text-sm text-[var(--muted)]">
-              Try clearing search or turning off &ldquo;Active only&rdquo;.
+              فیلترها را تغییر دهید یا گزینه «فقط فعال» را خاموش کنید.
             </p>
           </div>
         ) : (
           <>
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {visible.map((merchant) => (
-                <li key={merchant.id}>
-                  <MerchantCard merchant={merchant} />
+            <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {visible.map((merchant, index) => (
+                <li key={merchant.id} className="flex">
+                  <MerchantCard
+                    merchant={merchant}
+                    priority={index < 6}
+                  />
                 </li>
               ))}
             </ul>
 
             {hasMore && (
-              <div className="mt-10 flex justify-center">
+              <div className="mt-12 flex justify-center">
                 <button
                   type="button"
                   onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                  className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-8 py-3 text-sm font-semibold text-[var(--foreground)] shadow-sm transition hover:border-[color-mix(in_srgb,var(--brand-secondary)_30%,transparent)] hover:shadow-md"
+                  className="rounded-full bg-[var(--brand-secondary)] px-10 py-3.5 text-sm font-bold text-white shadow-md transition hover:opacity-90 hover:shadow-lg"
                 >
-                  Load {Math.min(PAGE_SIZE, filtered.length - visibleCount)}{" "}
-                  more
+                  نمایش {Math.min(PAGE_SIZE, filtered.length - visibleCount).toLocaleString("fa-IR")} مورد
+                  بیشتر
                 </button>
               </div>
             )}
@@ -260,8 +278,10 @@ export function ListingDirectory({
         )}
       </main>
 
-      <footer className="border-t border-[var(--border)] py-8 text-center text-xs text-[var(--muted-light)]">
-        Catalog synced {stats.generatedAt} · Powered by Rory
+      <footer className="border-t border-[var(--border)] py-10 text-center">
+        <p className="text-xs text-[var(--muted-light)]">
+          Rory · فهرست منوهای دیجیتال
+        </p>
       </footer>
     </div>
   );
@@ -278,16 +298,14 @@ function StatPill({
 }) {
   return (
     <div
-      className={`rounded-2xl border px-4 py-3 ${
+      className={`rounded-2xl border px-3 py-3 text-center sm:px-4 ${
         accent
-          ? "border-[color-mix(in_srgb,var(--brand-secondary)_25%,transparent)] bg-[color-mix(in_srgb,var(--brand-secondary)_8%,var(--surface))]"
+          ? "border-[color-mix(in_srgb,var(--brand-secondary)_30%,transparent)] bg-[color-mix(in_srgb,var(--brand-secondary)_10%,var(--surface))]"
           : "border-[var(--border)] bg-[var(--surface)]"
       }`}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted-light)]">
-        {label}
-      </p>
-      <p className="mt-0.5 text-2xl font-bold tabular-nums text-[var(--foreground)]">
+      <p className="text-[10px] font-medium text-[var(--muted-light)]">{label}</p>
+      <p className="mt-1 text-xl font-bold tabular-nums text-[var(--foreground)] sm:text-2xl">
         {value.toLocaleString("fa-IR")}
       </p>
     </div>
@@ -307,7 +325,7 @@ function FilterToggle({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
+      className={`rounded-2xl border px-4 py-3.5 text-sm font-semibold shadow-sm transition ${
         active
           ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--foreground)]"
@@ -331,9 +349,9 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+      className={`shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition ${
         active
-          ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white"
+          ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white shadow-sm"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:border-[color-mix(in_srgb,var(--brand-secondary)_25%,transparent)] hover:text-[var(--foreground)]"
       }`}
     >
