@@ -3,6 +3,7 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { MerchantCard } from "@/components/listing/MerchantCard";
 import type { Merchant } from "@/lib/merchants";
+import { formatPersianNumber } from "@/lib/persian-format";
 
 const PAGE_SIZE = 48;
 
@@ -15,23 +16,12 @@ interface ListingDirectoryProps {
   stats: {
     total: number;
     active: number;
-    fetchedAt: string;
+    fetchedAtLabel: string;
   };
 }
 
 function normalize(text: string): string {
   return text.trim().toLowerCase();
-}
-
-function formatFetchedAt(iso: string): string {
-  try {
-    return new Intl.DateTimeFormat("fa-IR", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
 }
 
 export function ListingDirectory({
@@ -99,7 +89,7 @@ export function ListingDirectory({
             کافه‌ها و رستوران‌ها
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-            {stats.total.toLocaleString("fa-IR")} مجموعه — جستجو کنید و مستقیم
+            {formatPersianNumber(stats.total)} مجموعه — جستجو کنید و مستقیم
             وارد منوی دیجیتال شوید.
           </p>
 
@@ -214,11 +204,11 @@ export function ListingDirectory({
         <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2 text-sm text-[var(--muted)]">
           <p>
             <span className="font-bold text-[var(--foreground)]">
-              {visible.length.toLocaleString("fa-IR")}
+              {formatPersianNumber(visible.length)}
             </span>
             {" / "}
             <span className="font-bold text-[var(--foreground)]">
-              {filtered.length.toLocaleString("fa-IR")}
+              {formatPersianNumber(filtered.length)}
             </span>
             {" مجموعه"}
             {deferredQuery !== query && (
@@ -226,7 +216,7 @@ export function ListingDirectory({
             )}
           </p>
           <p className="text-xs text-[var(--muted-light)]">
-            {formatFetchedAt(stats.fetchedAt)}
+            {stats.fetchedAtLabel}
           </p>
         </div>
 
@@ -254,7 +244,7 @@ export function ListingDirectory({
                   onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
                   className="rounded-full bg-[var(--brand-secondary)] px-8 py-3 text-sm font-bold text-white transition hover:opacity-90"
                 >
-                  {Math.min(PAGE_SIZE, filtered.length - visibleCount).toLocaleString("fa-IR")}{" "}
+                  {formatPersianNumber(Math.min(PAGE_SIZE, filtered.length - visibleCount))}{" "}
                   مورد بیشتر
                 </button>
               </div>
@@ -284,7 +274,7 @@ function StatPill({
       }`}
     >
       <span className="text-lg font-bold tabular-nums text-[var(--foreground)]">
-        {value.toLocaleString("fa-IR")}
+        {formatPersianNumber(value)}
       </span>
       <span className="text-xs text-[var(--muted-light)]">{label}</span>
     </div>

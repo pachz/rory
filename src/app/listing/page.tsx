@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getMerchantCatalog } from "@/lib/api/listing";
 import { ListingDirectory } from "@/components/listing/ListingDirectory";
 import { getMerchantPlans, getMerchantTypes } from "@/lib/merchants";
+import { formatPersianDateTime } from "@/lib/persian-format";
 
 /** ISR — matches CACHE_REVALIDATE_SECONDS default (300s). */
 export const revalidate = 300;
@@ -31,7 +32,7 @@ export default async function ListingPage() {
         stats={{
           total: catalog.count,
           active: catalog.activeCount,
-          fetchedAt: catalog.fetchedAt,
+          fetchedAtLabel: formatPersianDateTime(catalog.fetchedAt),
         }}
       />
     </div>
