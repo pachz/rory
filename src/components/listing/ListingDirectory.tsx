@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { MerchantCard } from "@/components/listing/MerchantCard";
 import type { Merchant } from "@/lib/merchants";
 import { formatPersianNumber } from "@/lib/persian-format";
@@ -36,6 +36,7 @@ export function ListingDirectory({
   const [planFilter, setPlanFilter] = useState<string>("all");
   const [sort, setSort] = useState<SortKey>("active");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const deferredQuery = useDeferredValue(query);
 
@@ -76,6 +77,29 @@ export function ListingDirectory({
   function resetPagination() {
     setVisibleCount(PAGE_SIZE);
   }
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((count) =>
+      Math.min(count + PAGE_SIZE, filtered.length),
+    );
+  }, [filtered.length]);
+
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: "240px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore]);
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -238,15 +262,12 @@ export function ListingDirectory({
             </ul>
 
             {hasMore && (
-              <div className="mt-8 flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                  className="rounded-full bg-[var(--brand-secondary)] px-8 py-3 text-sm font-bold text-white transition hover:opacity-90"
-                >
-                  {formatPersianNumber(Math.min(PAGE_SIZE, filtered.length - visibleCount))}{" "}
-                  مورد بیشتر
-                </button>
+              <div
+                ref={loadMoreRef}
+                className="mt-8 flex h-16 items-center justify-center text-sm text-[var(--muted-light)]"
+                aria-hidden
+              >
+                در حال بارگذاری…
               </div>
             )}
           </>
