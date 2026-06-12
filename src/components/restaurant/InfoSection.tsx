@@ -73,7 +73,7 @@ export function InfoSection({ intro, amenities }: InfoSectionProps) {
               {amenities.map((amenity) => (
                 <span
                   key={amenity.id}
-                  className="rounded-full bg-[color-mix(in_srgb,var(--brand-primary)_40%,transparent)] px-3 py-1 text-xs font-medium text-[var(--brand-accent)]"
+                  className="rounded-full border border-[var(--border)] bg-[var(--elevated)] px-3 py-1 text-xs font-medium text-[var(--foreground)]"
                 >
                   {amenity.name}
                 </span>
