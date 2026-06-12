@@ -43,7 +43,7 @@ export function RemoteImage({
   const fitClass = objectFit === "contain" ? "object-contain" : "object-cover";
   const imageClassName = `${fitClass} ${className}`.trim();
   const sizedContainerClass = fill
-    ? `relative h-full w-full ${containerClassName}`
+    ? `relative ${containerClassName}`.trim()
     : containerClassName;
 
   if (showPlaceholder) {
