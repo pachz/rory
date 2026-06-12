@@ -42,10 +42,13 @@ export function RemoteImage({
 
   const fitClass = objectFit === "contain" ? "object-contain" : "object-cover";
   const imageClassName = `${fitClass} ${className}`.trim();
+  const sizedContainerClass = fill
+    ? `relative h-full w-full ${containerClassName}`
+    : containerClassName;
 
   if (showPlaceholder) {
     return (
-      <div className={`relative ${containerClassName}`}>
+      <div className={sizedContainerClass}>
         <ImagePlaceholder
           variant={variant}
           label={alt}
@@ -57,7 +60,7 @@ export function RemoteImage({
   }
 
   return (
-    <div className={`relative ${containerClassName}`}>
+    <div className={sizedContainerClass}>
       <Image
         src={src!}
         alt={alt}

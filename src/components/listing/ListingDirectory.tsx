@@ -89,45 +89,35 @@ export function ListingDirectory({
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      {/* Hero */}
-      <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,color-mix(in_srgb,var(--brand-secondary)_22%,transparent),transparent)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,var(--background)_100%)]" />
+      {/* Hero — single column, stats inline below title */}
+      <header className="border-b border-[var(--border)] bg-[var(--surface)]">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+          <p className="mb-2 text-xs font-semibold tracking-wide text-[var(--muted-light)]">
+            Rory · فهرست منوها
+          </p>
+          <h1 className="text-3xl font-bold leading-tight text-[var(--foreground)] sm:text-4xl">
+            کافه‌ها و رستوران‌ها
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
+            {stats.total.toLocaleString("fa-IR")} مجموعه — جستجو کنید و مستقیم
+            وارد منوی دیجیتال شوید.
+          </p>
 
-        <div className="relative mx-auto max-w-7xl px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-light)] backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Rory Directory
-              </p>
-              <h1 className="text-4xl font-bold leading-[1.15] text-[var(--foreground)] sm:text-5xl lg:text-6xl">
-                کشف بهترین
-                <span className="block text-[color-mix(in_srgb,var(--brand-secondary)_88%,#c4a574)]">
-                  کافه‌ها و رستوران‌ها
-                </span>
-              </h1>
-              <p className="mt-5 max-w-xl text-base leading-8 text-[var(--muted)] sm:text-lg">
-                {stats.total.toLocaleString("fa-IR")} مجموعه غذایی با منوی
-                دیجیتال — جستجو کنید، فیلتر بزنید و مستقیم وارد منو شوید.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:min-w-[320px]">
-              <StatPill label="کل مجموعه‌ها" value={stats.total} />
-              <StatPill label="فعال" value={stats.active} accent />
-              <StatPill label="دسته‌بندی" value={types.length} />
-            </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <StatPill label="کل" value={stats.total} />
+            <StatPill label="فعال" value={stats.active} accent />
+            <StatPill label="دسته" value={types.length} />
           </div>
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="sticky top-0 z-20 border-y border-[var(--border)] bg-[color-mix(in_srgb,var(--background)_90%,transparent)] shadow-sm backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl space-y-3 px-5 py-4 sm:px-8">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <div className="relative min-w-0 flex-1">
-              <span className="pointer-events-none absolute inset-y-0 start-4 flex items-center text-[var(--muted-light)]">
+      {/* Filters — same max-width as grid */}
+      <div className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur-md">
+        <div className="mx-auto max-w-6xl space-y-3 px-4 py-4 sm:px-6">
+          {/* Row 1: search + controls */}
+          <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto] sm:items-center">
+            <div className="relative">
+              <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-[var(--muted-light)]">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                   <path
                     fillRule="evenodd"
@@ -143,43 +133,43 @@ export function ListingDirectory({
                   setQuery(e.target.value);
                   resetPagination();
                 }}
-                placeholder="جستجو در نام، نام کاربری یا دسته…"
-                className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] py-3.5 ps-11 pe-4 text-sm text-[var(--foreground)] shadow-sm outline-none transition placeholder:text-[var(--muted-light)] focus:border-[color-mix(in_srgb,var(--brand-secondary)_35%,transparent)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--brand-secondary)_8%,transparent)]"
+                placeholder="جستجو…"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] py-2.5 ps-10 pe-4 text-sm outline-none focus:border-[color-mix(in_srgb,var(--brand-secondary)_40%,transparent)]"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <FilterToggle
-                active={activeOnly}
-                onClick={() => {
-                  setActiveOnly((v) => !v);
-                  resetPagination();
-                }}
-                label="فقط فعال"
-              />
-              <select
-                value={sort}
-                onChange={(e) => {
-                  setSort(e.target.value as SortKey);
-                  resetPagination();
-                }}
-                className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--foreground)] shadow-sm outline-none"
-              >
-                <option value="active">مرتب‌سازی: فعال‌ها اول</option>
-                <option value="name">مرتب‌سازی: نام</option>
-                <option value="type">مرتب‌سازی: دسته</option>
-              </select>
-            </div>
+            <FilterToggle
+              active={activeOnly}
+              onClick={() => {
+                setActiveOnly((v) => !v);
+                resetPagination();
+              }}
+              label="فقط فعال"
+            />
+
+            <select
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value as SortKey);
+                resetPagination();
+              }}
+              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-sm outline-none"
+            >
+              <option value="active">فعال‌ها اول</option>
+              <option value="name">بر اساس نام</option>
+              <option value="type">بر اساس دسته</option>
+            </select>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+          {/* Row 2: type chips — wrap instead of scroll */}
+          <div className="flex flex-wrap gap-1.5">
             <Chip
               active={typeFilter === "all"}
               onClick={() => {
                 setTypeFilter("all");
                 resetPagination();
               }}
-              label="همه دسته‌ها"
+              label="همه"
             />
             {types.map((type) => (
               <Chip
@@ -194,7 +184,8 @@ export function ListingDirectory({
             ))}
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+          {/* Row 3: plan chips */}
+          <div className="flex flex-wrap gap-1.5">
             <Chip
               active={planFilter === "all"}
               onClick={() => {
@@ -218,71 +209,59 @@ export function ListingDirectory({
         </div>
       </div>
 
-      {/* Results */}
-      <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-[var(--muted)]">
-            نمایش{" "}
+      {/* Grid */}
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2 text-sm text-[var(--muted)]">
+          <p>
             <span className="font-bold text-[var(--foreground)]">
               {visible.length.toLocaleString("fa-IR")}
-            </span>{" "}
-            از{" "}
+            </span>
+            {" / "}
             <span className="font-bold text-[var(--foreground)]">
               {filtered.length.toLocaleString("fa-IR")}
-            </span>{" "}
-            مجموعه
+            </span>
+            {" مجموعه"}
             {deferredQuery !== query && (
-              <span className="ms-2 text-[var(--muted-light)]">در حال جستجو…</span>
+              <span className="ms-2 opacity-60">…</span>
             )}
           </p>
-          <p className="text-[11px] text-[var(--muted-light)]">
-            بروزرسانی: {formatFetchedAt(stats.fetchedAt)}
+          <p className="text-xs text-[var(--muted-light)]">
+            {formatFetchedAt(stats.fetchedAt)}
           </p>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-20 text-center">
-            <p className="text-xl font-bold text-[var(--foreground)]">
-              نتیجه‌ای پیدا نشد
-            </p>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              فیلترها را تغییر دهید یا گزینه «فقط فعال» را خاموش کنید.
+          <div className="rounded-2xl border border-dashed border-[var(--border)] px-6 py-16 text-center">
+            <p className="font-bold text-[var(--foreground)]">نتیجه‌ای نیست</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              فیلترها را تغییر دهید.
             </p>
           </div>
         ) : (
           <>
-            <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visible.map((merchant, index) => (
-                <li key={merchant.id} className="flex">
-                  <MerchantCard
-                    merchant={merchant}
-                    priority={index < 6}
-                  />
+                <li key={merchant.id}>
+                  <MerchantCard merchant={merchant} priority={index < 6} />
                 </li>
               ))}
             </ul>
 
             {hasMore && (
-              <div className="mt-12 flex justify-center">
+              <div className="mt-8 flex justify-center">
                 <button
                   type="button"
                   onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                  className="rounded-full bg-[var(--brand-secondary)] px-10 py-3.5 text-sm font-bold text-white shadow-md transition hover:opacity-90 hover:shadow-lg"
+                  className="rounded-full bg-[var(--brand-secondary)] px-8 py-3 text-sm font-bold text-white transition hover:opacity-90"
                 >
-                  نمایش {Math.min(PAGE_SIZE, filtered.length - visibleCount).toLocaleString("fa-IR")} مورد
-                  بیشتر
+                  {Math.min(PAGE_SIZE, filtered.length - visibleCount).toLocaleString("fa-IR")}{" "}
+                  مورد بیشتر
                 </button>
               </div>
             )}
           </>
         )}
       </main>
-
-      <footer className="border-t border-[var(--border)] py-10 text-center">
-        <p className="text-xs text-[var(--muted-light)]">
-          Rory · فهرست منوهای دیجیتال
-        </p>
-      </footer>
     </div>
   );
 }
@@ -298,16 +277,16 @@ function StatPill({
 }) {
   return (
     <div
-      className={`rounded-2xl border px-3 py-3 text-center sm:px-4 ${
+      className={`flex items-center gap-2 rounded-xl border px-4 py-2 ${
         accent
-          ? "border-[color-mix(in_srgb,var(--brand-secondary)_30%,transparent)] bg-[color-mix(in_srgb,var(--brand-secondary)_10%,var(--surface))]"
-          : "border-[var(--border)] bg-[var(--surface)]"
+          ? "border-[color-mix(in_srgb,var(--brand-secondary)_30%,transparent)] bg-[color-mix(in_srgb,var(--brand-secondary)_8%,var(--surface))]"
+          : "border-[var(--border)] bg-[var(--background)]"
       }`}
     >
-      <p className="text-[10px] font-medium text-[var(--muted-light)]">{label}</p>
-      <p className="mt-1 text-xl font-bold tabular-nums text-[var(--foreground)] sm:text-2xl">
+      <span className="text-lg font-bold tabular-nums text-[var(--foreground)]">
         {value.toLocaleString("fa-IR")}
-      </p>
+      </span>
+      <span className="text-xs text-[var(--muted-light)]">{label}</span>
     </div>
   );
 }
@@ -325,10 +304,10 @@ function FilterToggle({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border px-4 py-3.5 text-sm font-semibold shadow-sm transition ${
+      className={`whitespace-nowrap rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
         active
           ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white"
-          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--foreground)]"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)]"
       }`}
     >
       {label}
@@ -349,10 +328,10 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition ${
+      className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium transition ${
         active
-          ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white shadow-sm"
-          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:border-[color-mix(in_srgb,var(--brand-secondary)_25%,transparent)] hover:text-[var(--foreground)]"
+          ? "border-[var(--brand-secondary)] bg-[var(--brand-secondary)] text-white"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--foreground)]"
       }`}
     >
       {label}
